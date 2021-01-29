@@ -28,4 +28,14 @@ const UsuarioSchema = Schema({
     }
 });
 
+
+// Esta funcion es para cambiar el _id que trae por defecto mongo por el uid es algo propio
+UsuarioSchema.method('toJSON', function() {
+
+    const { __v, _id, ...object } = this.toObject();
+
+    object.uid = _id;
+    return object;
+});
+
 module.exports = model('Usuario', UsuarioSchema);
