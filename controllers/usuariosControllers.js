@@ -76,22 +76,21 @@ const actualizarUsuarios = async(req, res = response) => {
             });
         }
 
-        const campos = req.body;
+        const { password, google, email, ...campos } = req.body;
 
-        if (usuarioDB.email === req.body.email) {
-            delete campos.email;
-        } else {
-            const existeEmail = await Usuario.findOne({ email: req.body.email });
+        if (usuarioDB.email !== email) {
+
+            const existeEmail = await Usuario.findOne({ email });
+
             if (existeEmail) {
                 res.status(400).json({
                     ok: false,
                     msg: 'Ya existe un usuario con ese email'
-                })
+                });
             }
         }
-        //Actualizaciones 
-        delete campos.password;
-        delete campos.google;
+
+        campos.email = email;
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });
 
@@ -110,8 +109,39 @@ const actualizarUsuarios = async(req, res = response) => {
     }
 }
 
+const borrarUsuario = async(req, res = response) => {
+
+    const uid = req.params.id;
+
+    try {
+
+        const usuarioDB = await usuario.findById(uid);
+
+        if (!usuarioDB) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No existe el usuario por ese id'
+            });
+        }
+        await Usuario.findByIdAndDelete(uid);
+
+        res.status(200).json({
+            ok: true,
+            msg: 'Usuario Eliminado'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error Inesperado'
+        });
+    }
+
+}
+
 module.exports = {
     getUsuarios,
     crearUsuarios,
-    actualizarUsuarios
+    actualizarUsuarios,
+    borrarUsuario
 }
