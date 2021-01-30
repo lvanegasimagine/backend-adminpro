@@ -3,14 +3,12 @@ const { response } = require('express');
 
 const getHospitales = async(req, res = response) => {
 
-
-
     try {
-        const hospital = await Hospital.find();
+        const hospitales = await Hospital.find().populate('usuario', 'nombre email');
 
         res.status(400).json({
             ok: false,
-            msg: hospital
+            hospitales
         })
 
     } catch (error) {

@@ -4,7 +4,7 @@ const { response } = require('express');
 const getMedico = async(req, res = response) => {
     try {
 
-        const medicos = await Medico.find();
+        const medicos = await Medico.find().populate('usuario', 'nombre').populate('hospital', 'nombre');
 
         res.status(400).json({
             ok: false,
