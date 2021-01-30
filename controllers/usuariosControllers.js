@@ -11,12 +11,20 @@ const getUsuarios = async(req, res) => {
     // const usuarios = await Usuario.find({}, 'nombre email google');
 
     // Muestra todos los usuarios
-    const usuarios = await Usuario.find();
+
+    const desde = Number(req.query.desde) || 0;
+
+    //Arreglos de Promesas para que sea al mismo tiempo
+    const [usuarios, total] = await Promise.all([
+        Usuario.find().skip(desde).limit(5),
+        Usuario.count()
+    ]);
 
     res.json({
         ok: true,
         usuarios,
-        uid: req.uid
+        uid: req.uid,
+        total
     });
 };
 
