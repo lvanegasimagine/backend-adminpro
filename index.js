@@ -20,6 +20,8 @@ connectDB();
 
 
 app.use('/api/usuarios', require('./routes/usuariosRoutes'));
+app.use('/api/hospitales', require('./routes/hospitalesRoutes'));
+app.use('/api/medicos', require('./routes/medicosRoutes'));
 app.use('/api/login', require('./routes/authRoutes'));
 
 app.listen(process.env.PORT, () => console.log(`Servidor corriendo en el puerto ${process.env.PORT}`));
