@@ -1,17 +1,14 @@
 /*
-    Ruta: /api/todo/:fernando
+    Ruta: /api/todo/:luis
 */
 
 const { Router } = require('express');
-const { getTodo } = require('../controllers/busquedaControllers');
-// const { check } = require('express-validator');
-const { validarCampos } = require('../middlewares/validar-campos');
+const { getTodo, getDocumentoColeccion } = require('../controllers/busquedaControllers');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
-router.get('/:busqueda', [
-    validarJWT
-], getTodo);
+router.get('/:busqueda', [validarJWT], getTodo);
+router.get('/coleccion/:tabla/:busqueda', [validarJWT], getDocumentoColeccion);
 
 module.exports = router;
