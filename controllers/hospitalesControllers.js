@@ -1,5 +1,6 @@
 const Hospital = require('../models/hospital');
 const { response } = require('express');
+const hospital = require('../models/hospital');
 
 const getHospitales = async(req, res = response) => {
 
@@ -46,11 +47,32 @@ const crearHospital = async(req, res = response) => {
     }
 }
 
-const actualizarHospital = (req, res = response) => {
+const actualizarHospital = async(req, res = response) => {
+
+    const hospitalID = req.params.id;
+    const usuarioID = req.params.uid;
+
     try {
-        res.status(400).json({
+
+        const hospitalDB = await Hospital.findById(hospitalID);
+
+        if (!hospitalDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Hospital No encontrado por ID'
+            })
+        }
+
+        const cambioHospital = {
+            ...req.body,
+            usurio: usuarioID
+        }
+
+        const hospitalActualizado = await Hospital.findByIdAndUpdate(hospitalID, cambioHospital, { new: true });
+
+        res.status(200).json({
             ok: false,
-            msg: 'Actualizar Hospitales'
+            hospital: hospitalActualizado
         })
 
     } catch (error) {
@@ -62,11 +84,26 @@ const actualizarHospital = (req, res = response) => {
     }
 }
 
-const EliminarHospital = (req, res = response) => {
+const EliminarHospital = async(req, res = response) => {
+
+    const hospitalID = req.params.id;
+
     try {
-        res.status(400).json({
+
+        const hospitalDB = await Hospital.findById(hospitalID);
+
+        if (!hospitalDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Hospital No encontrado por ID'
+            })
+        }
+
+        await Hospital.findByIdAndDelete(hospitalID);
+
+        res.status(200).json({
             ok: false,
-            msg: 'Eliminar Hospitales'
+            msg: 'Hospital Eliminado'
         })
 
     } catch (error) {
@@ -76,6 +113,8 @@ const EliminarHospital = (req, res = response) => {
             msg: 'Error Inesperado'
         })
     }
+
+
 }
 
 module.exports = {

@@ -2,10 +2,15 @@
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { login, googleSignIn } = require('../controllers/authControllers');
+const { login, googleSignIn, renewToken } = require('../controllers/authControllers');
 const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
+
+router.get('/renew', [
+    validarJWT
+], renewToken);
 
 router.post('/', [
     check('email', 'El email es obligatorio').isEmail(),
