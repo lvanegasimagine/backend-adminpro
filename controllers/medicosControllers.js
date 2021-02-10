@@ -6,9 +6,9 @@ const getMedico = async(req, res = response) => {
 
         const medicos = await Medico.find().populate('usuario', 'nombre').populate('hospital', 'nombre');
 
-        res.status(400).json({
-            ok: false,
-            msg: medicos
+        res.status(200).json({
+            ok: true,
+            medicos
         })
 
     } catch (error) {
@@ -19,6 +19,29 @@ const getMedico = async(req, res = response) => {
         })
     }
 }
+
+const getMedicoById = async(req, res = response) => {
+
+    const id = req.params.id;
+    try {
+
+        const medico = await Medico.findById(id).populate('usuario', 'nombre').populate('hospital', 'nombre');
+
+        res.status(200).json({
+            ok: true,
+            medico
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            ok: false,
+            msg: 'Error Inesperado'
+        })
+    }
+}
+
+
 
 const crearMedico = async(req, res = response) => {
 
@@ -32,8 +55,8 @@ const crearMedico = async(req, res = response) => {
 
         const medicoDB = await medico.save();
 
-        res.status(400).json({
-            ok: false,
+        res.status(200).json({
+            ok: true,
             medico: medicoDB
         })
 
@@ -70,7 +93,7 @@ const actualizarMedico = async(req, res = response) => {
         const medicoActualizado = await Medico.findByIdAndUpdate(medicosID, cambioMedico, { new: true });
 
         res.status(200).json({
-            ok: false,
+            ok: true,
             medico: medicoActualizado
         })
 
@@ -93,7 +116,7 @@ const EliminarMedico = async(req, res = response) => {
 
         if (!medicosDB) {
             return res.status(404).json({
-                ok: false,
+                ok: true,
                 msg: 'Medico No encontrado por ID'
             })
         }
@@ -116,6 +139,7 @@ const EliminarMedico = async(req, res = response) => {
 
 module.exports = {
     getMedico,
+    getMedicoById,
     crearMedico,
     actualizarMedico,
     EliminarMedico

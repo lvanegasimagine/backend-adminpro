@@ -7,8 +7,8 @@ const getHospitales = async(req, res = response) => {
     try {
         const hospitales = await Hospital.find().populate('usuario', 'nombre email');
 
-        res.status(400).json({
-            ok: false,
+        res.status(200).json({
+            ok: true,
             hospitales
         })
 
@@ -33,8 +33,8 @@ const crearHospital = async(req, res = response) => {
 
         const hospitalDB = await hospital.save();
 
-        res.status(400).json({
-            ok: false,
+        res.status(200).json({
+            ok: true,
             hospital: hospitalDB
         })
 

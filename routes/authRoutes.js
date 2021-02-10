@@ -8,9 +8,6 @@ const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
-router.get('/renew', [
-    validarJWT
-], renewToken);
 
 router.post('/', [
     check('email', 'El email es obligatorio').isEmail(),
@@ -22,5 +19,10 @@ router.post('/google', [
     check('token', 'El token de Google es Obligatorio').not().isEmpty(),
     validarCampos
 ], googleSignIn);
+
+
+router.get('/renew', [
+    validarJWT
+], renewToken);
 
 module.exports = router;

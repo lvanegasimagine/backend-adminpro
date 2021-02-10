@@ -14,9 +14,9 @@ const login = async(req, res = response) => {
 
         //Verificar Email
 
-        const usuarioDB = await Usuario.findOne({ email });
+        const usuario = await Usuario.findOne({ email });
 
-        if (!usuarioDB) {
+        if (!usuario) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Email no encontrado'
@@ -25,7 +25,7 @@ const login = async(req, res = response) => {
 
         // Verificar Contraseña
 
-        const validPassword = bcrypt.compareSync(password, usuarioDB.password);
+        const validPassword = bcrypt.compareSync(password, usuario.password);
 
         if (!validPassword) {
             return res.status(400).json({
@@ -34,13 +34,18 @@ const login = async(req, res = response) => {
             });
         }
 
-        //Generar el Token
+        //Generar el Token y peticion para obtencion de ID
 
-        const token = await generarJWT(usuarioDB.id);
+        const [token, id] = await Promise.all([
+            generarJWT(usuario.id),
+            usuario.id
+        ]);
 
         res.status(200).json({
+            id,
             ok: true,
-            token: token
+            token: token,
+            usuario
         });
 
     } catch (error) {
@@ -100,11 +105,15 @@ const googleSignIn = async(req, res = response) => {
 const renewToken = async(req, res = response) => {
 
     const uid = req.uid;
+
     const token = await generarJWT(uid);
+
+    const usuario = await Usuario.findById(uid);
 
     res.json({
         ok: true,
-        token
+        token,
+        usuario,
     })
 }
 
